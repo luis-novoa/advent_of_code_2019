@@ -34,9 +34,6 @@ class Map
         end
       end
     }
-    # @orbit_chains.each do |chain|
-    #   orbits_sum += (1..chain.length).inject(:+)
-    # end
     p orbits_sum
   end
 end
