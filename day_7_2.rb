@@ -8,7 +8,7 @@ class Computer
 
   def program(input1, input2)
     @used_input = 0
-    @i = 0
+    @i = 0 if @i.nil?
     @break = "no"
     loop do
       modes(@array[@i])
@@ -70,6 +70,7 @@ class Computer
     when 4
       @i += 2
       @output = array_of_modes[0]
+      @break = "yes"
 
     when 5
       unless array_of_modes[0].zero?
@@ -102,19 +103,36 @@ class Computer
       @i += 4
 
     when 99
+      @output = "finished"
       @break = "yes"
 
     end
   end
 end
 
-settings = (0..4).to_a.permutation.to_a
+settings = (5..9).to_a.permutation.to_a
 outputs = Hash.new
+amp_software = [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
+27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5]
 settings.each_with_index do |combination, index|
+  amp_a = Computer.new(amp_software)
+  amp_b = Computer.new(amp_software)
+  amp_c = Computer.new(amp_software)
+  amp_d = Computer.new(amp_software)
+  amp_e = Computer.new(amp_software)
   output = 0
-  combination.each do |order|
-    santas_computer = Computer.new([3,8,1001,8,10,8,105,1,0,0,21,38,55,64,81,106,187,268,349,430,99999,3,9,101,2,9,9,1002,9,2,9,101,5,9,9,4,9,99,3,9,102,2,9,9,101,3,9,9,1002,9,4,9,4,9,99,3,9,102,2,9,9,4,9,99,3,9,1002,9,5,9,1001,9,4,9,102,4,9,9,4,9,99,3,9,102,2,9,9,1001,9,5,9,102,3,9,9,1001,9,4,9,102,5,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,99,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,99])
-    output = santas_computer.program(order, output)
+  output_a = amp_a.program(combination[0], 0)
+  loop do
+    output_b = amp_b.program(combination[1], output_a)
+    output_c = amp_c.program(combination[2], output_b)
+    output_d = amp_d.program(combination[3], output_c)
+    output_e = amp_e.program(combination[4], output_d)
+    if output_a == "finished" && output_b == "finished" && output_c == "finished" && output_d == "finished"
+      output = output_e
+      break
+    else
+      output_a = amp_a.program(combination[0], output_e)
+    end
   end
   outputs[output] = index
 end
