@@ -11,6 +11,30 @@ class Map
     @planets.uniq!
   end
 
+  def shortest_path(place_A, place_B)
+    orbits
+    orbit_A = []
+    orbit_B = []
+    @orbit_chains.each do |chain|
+      orbit_A = chain if chain.any?(place_A)
+      orbit_B = chain if chain.any?(place_B)
+    end
+    orbit_A = orbit_A[0...orbit_A.rindex(place_A)]
+    orbit_B = orbit_B[0...orbit_B.rindex(place_B)]
+    orbit_A.reverse_each do |a|
+      orbit_B.reverse_each do |b|
+        if a == b
+          orbit_A = orbit_A[orbit_A.rindex(a)...orbit_A.length]
+          orbit_B = orbit_B[orbit_B.rindex(b)...orbit_B.length]
+          break
+        end
+      end
+    end
+    p orbit_A.length + orbit_B.length - 2
+  end
+
+  private
+
   def orbits
     remaining_orbits = @map.clone
     orbits_sum = 0
@@ -34,10 +58,10 @@ class Map
         end
       end
     }
-    p orbits_sum
   end
+
 end
 
 input = File.read("inputs/day6.txt").split
 galaxy = Map.new(input)
-galaxy.orbits
+galaxy.shortest_path('YOU', 'SAN')
