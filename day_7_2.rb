@@ -125,24 +125,28 @@ settings.each_with_index do |combination, index|
   amp_d = Computer.new(amp_software)
   amp_e = Computer.new(amp_software)
   output = 0
+  output_a = amp_a.program(combination[0], 0)
   loop do
-    output = amp_a.program(combination[0], output)
-    # p output
+    # p output_a
     p "a"
-    output = amp_b.program(combination[1], output)
+    output_b = amp_b.program(combination[1], output_a)
     p 'b'
-    # p output
-    output = amp_c.program(combination[2], output)
+    # p output_b
+    output_c = amp_c.program(combination[2], output_b)
     p 'c'
     # p output_c
-    output = amp_d.program(combination[3], output)
+    output_d = amp_d.program(combination[3], output_c)
     p 'd'
     # p output_d
-    output = amp_e.program(combination[4], output)
+    output_e = amp_e.program(combination[4], output_d)
     p 'e'
     # p output_e
-    break if output == "finished"
-    output = amp_a.program(combination[0], output)
+    if output_a == "finished" && output_b == "finished" && output_c == "finished" && output_d == "finished"
+      output = output_e
+      break
+    else
+      output_a = amp_a.program(combination[0], output_e)
+    end
   end
   outputs[output] = index
 end
