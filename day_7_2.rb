@@ -9,6 +9,8 @@ class Computer
   def program(input1, input2)
     @used_input = 0
     @i = 0 if @i.nil?
+    p @i
+    p @array
     @break = "no"
     loop do
       modes(@array[@i])
@@ -52,6 +54,8 @@ class Computer
   end
 
   def execute(array_of_modes, pass_input1, pass_input2)
+    # p @i
+    # p @array
     case @array[@i]
     when 1
       @array[@array[@i + 3]] = array_of_modes[0] + array_of_modes[1]
@@ -121,20 +125,28 @@ settings.each_with_index do |combination, index|
   amp_d = Computer.new(amp_software)
   amp_e = Computer.new(amp_software)
   output = 0
-  output_a = amp_a.program(combination[0], 0)
   loop do
-    output_b = amp_b.program(combination[1], output_a)
-    output_c = amp_c.program(combination[2], output_b)
-    output_d = amp_d.program(combination[3], output_c)
-    output_e = amp_e.program(combination[4], output_d)
-    if output_a == "finished" && output_b == "finished" && output_c == "finished" && output_d == "finished"
-      output = output_e
-      break
-    else
-      output_a = amp_a.program(combination[0], output_e)
-    end
+    output = amp_a.program(combination[0], output)
+    # p output
+    p "a"
+    output = amp_b.program(combination[1], output)
+    p 'b'
+    # p output
+    output = amp_c.program(combination[2], output)
+    p 'c'
+    # p output_c
+    output = amp_d.program(combination[3], output)
+    p 'd'
+    # p output_d
+    output = amp_e.program(combination[4], output)
+    p 'e'
+    # p output_e
+    break if output == "finished"
+    output = amp_a.program(combination[0], output)
   end
   outputs[output] = index
 end
 
 p outputs.max
+
+[3, 26, 1, 26, -4, 26, 3, 27, 2, 27, 2, 27, 1, 27, 26, 27, 4, 27, 1, 28, -1, 28, 5, 28, 6, 99, 108, 113, 4]
