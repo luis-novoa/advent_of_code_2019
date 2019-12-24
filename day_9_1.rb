@@ -4,6 +4,7 @@ class Computer
 
   def initialize(array)
     @array = array
+    @array.map! do |e| e.to_i end
   end
 
   def program(*input)
@@ -12,10 +13,14 @@ class Computer
     @relative_base = 0 if @relative_base.nil?
     @break = "no"
     loop do
-      # p @i
+      # p @array
+      # p '1'
       modes(@array[@i])
+      # p '2'
       operation(@array[@i])
+      # p '3'
       execute(@modes, input)
+      # p '4'
       if @break == "yes"
         return @output
       end
@@ -33,58 +38,77 @@ class Computer
 
   def modes(element)
     @modes = element.to_s
+    # p '================='
+    # p @i
+    # p @modes
+    # p element
     @modes[-1] = '' 
     @modes[-1] = '' unless @modes == ''
+    # p @modes
     @modes = @modes.split('').reverse
     @modes[0] ||= 0
     @modes[1] ||= 0
     @modes[2] ||= 0
+    # p @modes
     j = 1
     @modes.map! do |e|
+      # p @modes
+      e = e.to_i
       selected = 0
+      # p e
       case e
-      when "1"
+      when 1
+        # p 'case 1'
         e = @array[@i + j]
 
-      when "2"
+      when 2
+        # p @relative_base
+        # p @array[@i+j]
+        # p @i
+        # p 'case 2'
         selected = rotator(@relative_base + @array[@i + j])
         e = @array[selected]
 
       else
+        # p 'case 3.1'
         selected = rotator(@array[@i + j])
         e = @array[selected]
       end
       j += 1
+      # p e
+      # p @modes
       e
     end
   end
 
   def rotator(index)
-    new_index = index
-    length = @array.length.clone
-    loop do
-      p length if new_index < 0 #Note: this calculates negative numbers, but it shouldn't.
-      break if new_index < length
-      # p 'what' if new_index < 0
-      new_index -= length
-    end
+    index ||= 0
+    new_index = index % @array.length
+    # p new_index
     new_index
   end
 
   def execute(array_of_modes, input)
     selected_3 = rotator(@array[@i + 3])
-    # p @array
-    # p @array[@i]
-    # p array_of_modes
-    @break = 'yes' if @array[4] == 218
+    p '=================='
+    p @array
+    p @array[@i]
+    p array_of_modes
+    # p selected_3
+    @break = 'yes' if @array[@i] == 16 # @array[4] == 218
+    # p @op
+    # p @modes
+    # p @i
     case @op
     when 1
       @array[selected_3] = array_of_modes[0] + array_of_modes[1]
       @i += 4
       # @break = 'yes'
-
+      
     when 2
       @array[selected_3] = array_of_modes[0] * array_of_modes[1]
+      # p @array[selected_3]
+      # p @array
       @i += 4
 
     when 3
@@ -95,9 +119,9 @@ class Computer
       @i += 2
 
     when 4
-      @i += 2
       @output = array_of_modes[0]
       p @output
+      @i += 2
       # @break = "yes" if @output == 204
 
     when 5
@@ -154,4 +178,4 @@ end
 new_intcode = Computer.new([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99])
 # new_intcode = Computer.new([1102,34915192,34915192,7,4,7,99,0]) #works
 # new_intcode = Computer.new([104,1125899906842624,99]) #works
-new_intcode.program
+new_intcode.program(1)
