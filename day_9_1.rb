@@ -14,6 +14,7 @@ class Computer
     @break = "no"
     loop do
       # p @array
+      # p @i
       # p '1'
       modes(@array[@i])
       # p '2'
@@ -21,7 +22,9 @@ class Computer
       # p '3'
       execute(@modes, input)
       # p '4'
+      # p @i
       if @break == "yes"
+        # p @array
         return @output
       end
     end
@@ -59,6 +62,7 @@ class Computer
       case e
       when 1
         # p 'case 1'
+        expansor(@i + j)
         e = @array[@i + j]
 
       when 2
@@ -66,13 +70,13 @@ class Computer
         # p @array[@i+j]
         # p @i
         # p 'case 2'
-        selected = rotator(@relative_base + @array[@i + j])
-        e = @array[selected]
+        expansor(@relative_base + @array[@i + j])
+        e = @array[@relative_base + @array[@i + j]]
 
       else
         # p 'case 3.1'
-        selected = rotator(@array[@i + j])
-        e = @array[selected]
+        expansor(@array[@i + j])
+        e = @array[@array[@i + j]]
       end
       j += 1
       # p e
@@ -81,40 +85,39 @@ class Computer
     end
   end
 
-  def rotator(index)
-    index ||= 0
-    new_index = index % @array.length
-    # p new_index
-    new_index
+  def expansor(index)
+    loop do
+      # p @array
+      break if index <= @array.length
+      @array.push(0)
+    end
   end
 
   def execute(array_of_modes, input)
-    selected_3 = rotator(@array[@i + 3])
-    p '=================='
-    p @array
-    p @array[@i]
-    p array_of_modes
+    # p '=================='
+    # p @array
+    # p @array[@i]
+    # p array_of_modes
     # p selected_3
-    @break = 'yes' if @array[@i] == 16 # @array[4] == 218
+    # @break = 'yes' if @array[@i] == 16 # @array[4] == 218
     # p @op
     # p @modes
     # p @i
     case @op
     when 1
-      @array[selected_3] = array_of_modes[0] + array_of_modes[1]
+      @array[@array[@i+3]] = array_of_modes[0] + array_of_modes[1] #@array[@i + 3]
       @i += 4
       # @break = 'yes'
       
     when 2
-      @array[selected_3] = array_of_modes[0] * array_of_modes[1]
+      @array[@array[@i+3]] = array_of_modes[0] * array_of_modes[1]
       # p @array[selected_3]
       # p @array
       @i += 4
 
     when 3
-      selected_1 = rotator(@array[@i + 1])
-      @array[selected_1] = input[0] if @used_input == 0
-      @array[selected_1] = input[1] if @used_input > 0
+      @array[@array[@i+1]] = input[0] if @used_input == 0
+      @array[@array[@i+1]] = input[1] if @used_input > 0
       @used_input += 1
       @i += 2
 
@@ -140,17 +143,17 @@ class Computer
 
     when 7
       if array_of_modes[0] < array_of_modes[1]
-        @array[selected_3] = 1
+        @array[@array[@i+3]] = 1
       else
-        @array[selected_3] = 0
+        @array[@array[@i+3]] = 0
       end
       @i += 4
 
     when 8
       if array_of_modes[0] == array_of_modes[1]
-        @array[selected_3] = 1
+        @array[@array[@i+3]] = 1
       else
-        @array[selected_3] = 0
+        @array[@array[@i+3]] = 0
       end
       @i += 4
 
@@ -175,7 +178,7 @@ end
 
 # input = File.read("inputs/day9.txt").chomp.split(',')
 # new_intcode = Computer.new(input)
-new_intcode = Computer.new([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99])
+new_intcode = Computer.new([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]) #works
 # new_intcode = Computer.new([1102,34915192,34915192,7,4,7,99,0]) #works
 # new_intcode = Computer.new([104,1125899906842624,99]) #works
 new_intcode.program(1)
