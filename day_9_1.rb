@@ -54,6 +54,7 @@ class Computer
     @modes[2] ||= 0
     # p @modes
     j = 1
+    @target_index = []
     @modes.map! do |e|
       # p @modes
       e = e.to_i
@@ -63,6 +64,7 @@ class Computer
       when 1
         # p 'case 1'
         expansor(@i + j)
+        @target_index.push('N/A')
         e = @array[@i + j]
 
       when 2
@@ -71,11 +73,13 @@ class Computer
         # p @i
         # p 'case 2'
         expansor(@relative_base + @array[@i + j])
+        @target_index.push(@relative_base + @array[@i + j])
         e = @array[@relative_base + @array[@i + j]]
 
       else
         # p 'case 3.1'
         expansor(@array[@i + j])
+        @target_index.push(@array[@i + j])
         e = @array[@array[@i + j]]
       end
       j += 1
@@ -105,19 +109,19 @@ class Computer
     # p @i
     case @op
     when 1
-      @array[@array[@i+3]] = array_of_modes[0] + array_of_modes[1] #@array[@i + 3]
+      @array[@target_index[2]] = array_of_modes[0] + array_of_modes[1] #@array[@i + 3]
       @i += 4
       # @break = 'yes'
       
     when 2
-      @array[@array[@i+3]] = array_of_modes[0] * array_of_modes[1]
+      @array[@target_index[2]] = array_of_modes[0] * array_of_modes[1]
       # p @array[selected_3]
       # p @array
       @i += 4
 
     when 3
-      @array[@array[@i+1]] = input[0] if @used_input == 0
-      @array[@array[@i+1]] = input[1] if @used_input > 0
+      @array[@target_index[0]] = input[0] if @used_input == 0
+      @array[@target_index[0]] = input[1] if @used_input > 0
       @used_input += 1
       @i += 2
 
@@ -143,17 +147,17 @@ class Computer
 
     when 7
       if array_of_modes[0] < array_of_modes[1]
-        @array[@array[@i+3]] = 1
+        @array[@target_index[2]] = 1
       else
-        @array[@array[@i+3]] = 0
+        @array[@target_index[2]] = 0
       end
       @i += 4
 
     when 8
       if array_of_modes[0] == array_of_modes[1]
-        @array[@array[@i+3]] = 1
+        @array[@target_index[2]] = 1
       else
-        @array[@array[@i+3]] = 0
+        @array[@target_index[2]] = 0
       end
       @i += 4
 
@@ -176,9 +180,9 @@ class Computer
   end
 end
 
-# input = File.read("inputs/day9.txt").chomp.split(',')
-# new_intcode = Computer.new(input)
-new_intcode = Computer.new([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]) #works
+input = File.read("inputs/day9.txt").chomp.split(',')
+new_intcode = Computer.new(input)
+# new_intcode = Computer.new([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]) #works
 # new_intcode = Computer.new([1102,34915192,34915192,7,4,7,99,0]) #works
 # new_intcode = Computer.new([104,1125899906842624,99]) #works
 new_intcode.program(1)
