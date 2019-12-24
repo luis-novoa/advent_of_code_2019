@@ -137,4 +137,5 @@ end
 
 input = File.read("inputs/day9.txt").chomp.split(',')
 new_intcode = Computer.new(input)
-new_intcode.program(1)
+new_intcode.program(1) #First challenge
+new_intcode.program(2) #Second challenge
