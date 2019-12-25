@@ -14,6 +14,23 @@ class Map
           @array[i1][j1] = 0 if @array[i1][j1] == '#'
           j2 = j1
           i2 = i1
+          loop do
+            unless @array[i2][j2] == '.'
+              @array[i2][j2] = 0 if @array[i2][j2] == '#'
+              @array[i1][j1] += 1
+              @array[i2][j2] += 1
+              break
+            end
+            j2 += 1
+            break if j2 == @array.length
+          end
+          i2 += 1
+          j2 = 0
+          loop do
+            check_visibility(i2, j2)
+            j2 += 1
+            break if j2 == @array.length
+          end
         end
         break if j1 == @array[i1].length
         j1 += 1
